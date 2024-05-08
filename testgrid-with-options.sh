@@ -16,8 +16,8 @@
       exit 1;
     fi
 
-    NOSANA_DEFAULT_PATH=~/.nosana/
-    NOSANA_ROOT_PATH=~/${1:-$NOSANA_DEFAULT_PATH}/:/root/.nosana/
+    NOSANA_DEFAULT_PATH=~/.nosana
+    NOSANA_ROOT_PATH=${1:-$NOSANA_DEFAULT_PATH}/:/root/.nosana/
     GPU_ID="${2:-0}"
     PODMAN_PORT="808${GPU_ID}"
 
@@ -93,10 +93,10 @@
       if [ ! -d "logs" ]; then
         mkdir logs
       fi
-      docker logs nosana-node >& logs/nosana-node-$(date +%m-%d-%y:%H:%M:%S).log
+      docker logs nosana-node-$GPU_ID >& logs/nosana-node-$GPU_ID.log
     fi
 
-    docker rm --force podman nosana-node &>/dev/null
+    docker rm --force podman-$GPU_ID nosana-node-$GPU_ID &>/dev/null
     kill -9 `pidof podman` &>/dev/null
     if [[ $WSL2 == true ]]; then
       if ! check_cmd podman; then
@@ -140,7 +140,7 @@
     # Start Podman in docker
     podman_run_cmd $PODMAN_PORT $GPU_ID
     # Start Nosana-Node
-    nosana_run_cmd $NOSANA_ROOT_PATH $PODMAN_PORT
+    nosana_run_cmd $NOSANA_ROOT_PATH $PODMAN_PORT $GPU_ID
   }
 
   podman_run_cmd() {
@@ -149,7 +149,7 @@
     docker run -d \
       --pull=always \
       --gpus=${DEVICE} \
-      --name podman \
+      --name podman-$2 \
       --device /dev/fuse \
       --privileged \
       -e ENABLE_GPU=true \
@@ -180,9 +180,11 @@
       log_std "🔥 Starting Nosana-Node..."
     fi
 
+    echo $1
+
     docker run \
       --pull=always \
-      --name nosana-node \
+      --name nosana-node-$3 \
       --network host  \
       --interactive -t \
       --volume $1 \
