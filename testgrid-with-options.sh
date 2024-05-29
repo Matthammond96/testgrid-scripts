@@ -144,17 +144,19 @@
   }
 
   podman_run_cmd() {
-    DEVICE="device=${2}"
 
-    docker run -d \
+    docker run -td \
       --pull=always \
-      --gpus=${DEVICE} \
+      --gpus=all \
       --name podman-$2 \
       --device /dev/fuse \
       --privileged \
       -e ENABLE_GPU=true \
       -p $1:8080 \
-      nosana/podman podman system service --time 0 tcp:0.0.0.0:8080
+      nosana/podman
+
+    docker exec podman-$2 sed -i '120s/.*/env = [ "CUDA_VISIBLE_DEVICES='$2'", "NVIDIA_VISIBLE_DEVICES='$2'" ]/' /usr/share/containers/containers.conf
+    docker exec -d podman-$2 ./entrypoint.sh
 
     sleep 5 # wait for podman to start
   }
