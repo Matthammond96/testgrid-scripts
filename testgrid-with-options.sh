@@ -169,9 +169,9 @@
     NOSANA_NODE_ARGS+=(--network "$SOL_NET_ENV")
 
     if [[ $WSL2 == true ]]; then
-      NOSANA_NODE_ARGS+=(--podman "http://$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'):8080")
+      NOSANA_NODE_ARGS+=(--podman "http://$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'):808$3")
     else 
-      NOSANA_NODE_ARGS+=(--podman http://localhost:8080)
+      NOSANA_NODE_ARGS+=(--podman http://localhost:808$3)
     fi
 
     if [[ $NOSANA_NODE_VERBOSE == true ]]; then
