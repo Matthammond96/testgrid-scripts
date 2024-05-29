@@ -167,12 +167,11 @@
       node start
     )
     NOSANA_NODE_ARGS+=(--network "$SOL_NET_ENV")
-    NOSANA_NODE_ARGS+=(--rpc https://rpc.ironforge.network/mainnet?apiKey=01HV99468J2988SZ8P9J5RAM43)
 
     if [[ $WSL2 == true ]]; then
-      NOSANA_NODE_ARGS+=(--podman "http://$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'):$2")
+      NOSANA_NODE_ARGS+=(--podman "http://$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'):8080")
     else 
-      NOSANA_NODE_ARGS+=(--podman http://localhost:$2)
+      NOSANA_NODE_ARGS+=(--podman http://localhost:8080)
     fi
 
     if [[ $NOSANA_NODE_VERBOSE == true ]]; then
@@ -181,8 +180,6 @@
     else
       log_std "🔥 Starting Nosana-Node..."
     fi
-
-    echo $1
 
     docker run \
       --pull=always \
