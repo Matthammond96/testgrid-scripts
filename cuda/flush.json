@@ -1,0 +1,36 @@
+{
+  "version": "0.1",
+  "type": "container",
+  "meta": {
+    "trigger": "cli"
+  },
+  "ops": [
+    {
+      "type": "container/run",
+      "id": "nvidia-smi_before",
+      "args": {
+        "cmd": ["nvidia-smi"],
+        "gpu": true,
+        "image": "ubuntu"
+      }
+    },
+    {
+      "type": "container/run",
+      "id": "vram-flush",
+      "args": {
+        "cmd": ["./cuda_check"],
+        "gpu": true,
+        "image": "docker.io/matthammond962/force-vram-flush:0.0.1"
+      }
+    },
+    {
+      "type": "container/run",
+      "id": "nvidia-smi_after",
+      "args": {
+        "cmd": ["nvidia-smi"],
+        "gpu": true,
+        "image": "ubuntu"
+      }
+    }
+  ]
+}
