@@ -9,7 +9,7 @@
       "type": "container/run",
       "id": "nn_anti_spoof",
       "args": {
-        "cmd": ["python", "anti_spoof.py"],
+        "cmd": ["python3", "anti_spoof.py"],
         "image": "docker.io/nosana/anti-spoof:1.0.0-cu12.8",
         "gpu": true,
         "env": {
